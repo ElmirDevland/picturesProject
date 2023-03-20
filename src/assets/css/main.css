@@ -715,6 +715,11 @@ h4 {
 .features .features-img-6 {
   left: -15rem;
 }
+
+.status_notice {
+  text-align: center;
+}
+
 .sizes {
   padding: 9rem 0 20rem 0;
   background: url("../img/sizes-bg.jpg") no-repeat center;
