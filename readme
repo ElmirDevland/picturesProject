@@ -7,3 +7,5 @@ Slider Implementation.
 Sending data and files to the server.
 
 Mask and validation for the page.
+
+Request to the server. Loading elements to the page from the server.
