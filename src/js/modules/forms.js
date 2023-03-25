@@ -1,4 +1,4 @@
-const forms = () => {
+const forms = (state) => {
   const forms = document.querySelectorAll('form');
   const inputs = document.querySelectorAll('input');
   const upload = document.querySelectorAll('[name="upload"]');
@@ -69,6 +69,12 @@ const forms = () => {
 
       const formData = new FormData(form);
 
+      if (form.hasAttribute('data-form-calc')) {
+        for (const key in state) {
+          formData.append(key, state[key]);
+        }
+      }
+
       postData(path, formData)
         .then((data) => {
           console.log(data);
@@ -89,6 +95,10 @@ const forms = () => {
           upload.forEach((input) => {
             input.previousElementSibling.textContent = 'Файл не выбран';
           });
+
+          for (const key in state) {
+            delete state[key];
+          }
 
           setTimeout(() => {
             status.remove();
