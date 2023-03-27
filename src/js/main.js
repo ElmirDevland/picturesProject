@@ -10,23 +10,14 @@ import filter from './modules/filter';
 window.addEventListener('DOMContentLoaded', () => {
   'use strict';
 
-  const formState = {};
-
   modals();
   sliders('.main-slider-item');
   sliders('.feedback-slider-item', true, '.main-prev-btn', '.main-next-btn');
-  forms(formState);
+  forms();
   mask('[name="phone"]');
   inputsCheck('[name="name"]');
   inputsCheck('[name="message"]');
   showMoreStyles('.button-styles', '#styles .row');
-  calc(
-    '#size',
-    '#material',
-    '#options',
-    '.promocode',
-    '.calc-price',
-    formState
-  );
+  calc('#size', '#material', '#options', '.promocode', '.calc-price');
   filter();
 });

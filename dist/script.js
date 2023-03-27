@@ -12,7 +12,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-const calc = (sizeSelector, materialSelector, optionsSelector, promocodeSelector, resultSelector, state) => {
+const calc = (sizeSelector, materialSelector, optionsSelector, promocodeSelector, resultSelector) => {
   const size = document.querySelector(sizeSelector);
   const material = document.querySelector(materialSelector);
   const options = document.querySelector(optionsSelector);
@@ -37,7 +37,6 @@ const calc = (sizeSelector, materialSelector, optionsSelector, promocodeSelector
       result.textContent = total - total * 0.3 + 'руб.';
     } else {
       result.textContent = total + 'руб';
-      state.price = total;
       sendButton.removeAttribute('disabled');
       sendButton.style.cssText = `
           background-image: linear-gradient(66deg, #a12ab1 0%, #c818bc 100%);
@@ -48,62 +47,6 @@ const calc = (sizeSelector, materialSelector, optionsSelector, promocodeSelector
           background-color: transparent;
       `;
     }
-    function changeState(select, props) {
-      if (select === size) {
-        switch (select.value) {
-          case '500':
-            state[props] = '40x50';
-            break;
-          case '650':
-            state[props] = '50x70';
-            break;
-          case '900':
-            state[props] = '70x70';
-            break;
-          case '1100':
-            state[props] = '70x100';
-            break;
-          default:
-            delete state[props];
-            break;
-        }
-      }
-      if (select === material) {
-        switch (select.value) {
-          case '1.2':
-            state[props] = 'Холст из волокна';
-            break;
-          case '1.1':
-            state[props] = 'Льняной холст';
-            break;
-          case '1.5':
-            state[props] = 'Холст из натурального хлопка';
-            break;
-          default:
-            delete state[props];
-            break;
-        }
-      }
-      if (select === options) {
-        switch (select.value) {
-          case '200':
-            state[props] = 'Покрытие арт-гелем';
-            break;
-          case '500':
-            state[props] = 'Экспресс-изготовление';
-            break;
-          case '100':
-            state[props] = 'Доставка готовых работ';
-            break;
-          default:
-            delete state[props];
-            break;
-        }
-      }
-    }
-    changeState(size, 'size');
-    changeState(material, 'material');
-    changeState(options, 'options');
   }
   size.addEventListener('change', calcPrice);
   material.addEventListener('change', calcPrice);
@@ -126,21 +69,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 const filter = () => {
   const menu = document.querySelector('.portfolio-menu');
-  const items = document.querySelectorAll('li');
-  const btnAll = document.querySelector('.all');
-  const forLovers = document.querySelector('.lovers');
-  const forChef = document.querySelector('.chef');
-  const forGirl = document.querySelector('.girl');
-  const forGuy = document.querySelector('.guy');
-  const forGrandMother = document.querySelector('.grandmother');
-  const forGrandDad = document.querySelector('.granddad');
   const wrapper = document.querySelector('.portfolio-wrapper');
   const markAll = wrapper.querySelectorAll('.all');
-  const markLovers = wrapper.querySelectorAll('.lovers');
-  const markChef = wrapper.querySelectorAll('.chef');
-  const markGirl = wrapper.querySelectorAll('.girl');
-  const markGuy = wrapper.querySelectorAll('.guy');
   const no = document.querySelector('.portfolio-no');
+  const items = menu.querySelectorAll('li');
   function typeFilter(markType) {
     markAll.forEach((item, i) => {
       item.classList.remove('show', 'animated', 'fadeIn');
@@ -158,13 +90,6 @@ const filter = () => {
     no.classList.add('hide');
     no.classList.remove('animated', 'fadeIn');
   }
-  btnAll.addEventListener('click', () => typeFilter(markAll));
-  forLovers.addEventListener('click', () => typeFilter(markLovers));
-  forChef.addEventListener('click', () => typeFilter(markChef));
-  forGirl.addEventListener('click', () => typeFilter(markGirl));
-  forGuy.addEventListener('click', () => typeFilter(markGuy));
-  forGrandMother.addEventListener('click', () => typeFilter());
-  forGrandDad.addEventListener('click', () => typeFilter());
   menu.addEventListener('click', e => {
     const target = e.target;
     if (target && target.tagName == 'LI') {
@@ -174,6 +99,20 @@ const filter = () => {
       target.classList.add('active');
     }
   });
+  function filterRun(itemSelector) {
+    const btns = menu.querySelector(itemSelector);
+    const items = wrapper.querySelectorAll(itemSelector);
+    btns.addEventListener('click', () => {
+      items.length > 0 ? typeFilter(items) : typeFilter();
+    });
+  }
+  filterRun('.all');
+  filterRun('.lovers');
+  filterRun('.chef');
+  filterRun('.girl');
+  filterRun('.guy');
+  filterRun('.grandmother');
+  filterRun('.granddad');
 };
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (filter);
 
@@ -189,7 +128,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-const forms = state => {
+const forms = () => {
   const forms = document.querySelectorAll('form');
   const inputs = document.querySelectorAll('input');
   const upload = document.querySelectorAll('[name="upload"]');
@@ -199,7 +138,6 @@ const forms = state => {
       const dots = arr[0].length < 7 ? '.' : '...';
       arr[0] = arr[0].length < 7 ? arr[0] : arr[0].substring(0, 7);
       item.previousElementSibling.textContent = arr.join(`${dots}`);
-      console.log(arr);
     });
   });
   const postData = async (url, body) => {
@@ -241,9 +179,8 @@ const forms = state => {
       }, 450);
       const formData = new FormData(form);
       if (form.hasAttribute('data-form-calc')) {
-        for (const key in state) {
-          formData.append(key, state[key]);
-        }
+        const price = document.querySelector('.calc-price').textContent;
+        formData.append('total-price', price);
       }
       postData(path, formData).then(data => {
         console.log(data);
@@ -261,9 +198,6 @@ const forms = state => {
         upload.forEach(input => {
           input.previousElementSibling.textContent = 'Файл не выбран';
         });
-        for (const key in state) {
-          delete state[key];
-        }
         setTimeout(() => {
           status.remove();
           form.classList.remove('hide', 'fadeOutUp');
@@ -687,16 +621,15 @@ __webpack_require__.r(__webpack_exports__);
 window.addEventListener('DOMContentLoaded', () => {
   'use strict';
 
-  const formState = {};
   (0,_modules_modals__WEBPACK_IMPORTED_MODULE_0__["default"])();
   (0,_modules_sliders__WEBPACK_IMPORTED_MODULE_1__["default"])('.main-slider-item');
   (0,_modules_sliders__WEBPACK_IMPORTED_MODULE_1__["default"])('.feedback-slider-item', true, '.main-prev-btn', '.main-next-btn');
-  (0,_modules_forms__WEBPACK_IMPORTED_MODULE_2__["default"])(formState);
+  (0,_modules_forms__WEBPACK_IMPORTED_MODULE_2__["default"])();
   (0,_modules_mask__WEBPACK_IMPORTED_MODULE_3__["default"])('[name="phone"]');
   (0,_modules_inputsCheck__WEBPACK_IMPORTED_MODULE_4__["default"])('[name="name"]');
   (0,_modules_inputsCheck__WEBPACK_IMPORTED_MODULE_4__["default"])('[name="message"]');
   (0,_modules_showMoreStyles__WEBPACK_IMPORTED_MODULE_5__["default"])('.button-styles', '#styles .row');
-  (0,_modules_calc__WEBPACK_IMPORTED_MODULE_6__["default"])('#size', '#material', '#options', '.promocode', '.calc-price', formState);
+  (0,_modules_calc__WEBPACK_IMPORTED_MODULE_6__["default"])('#size', '#material', '#options', '.promocode', '.calc-price');
   (0,_modules_filter__WEBPACK_IMPORTED_MODULE_7__["default"])();
 });
 })();

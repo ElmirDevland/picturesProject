@@ -1,4 +1,4 @@
-const forms = (state) => {
+const forms = () => {
   const forms = document.querySelectorAll('form');
   const inputs = document.querySelectorAll('input');
   const upload = document.querySelectorAll('[name="upload"]');
@@ -10,8 +10,6 @@ const forms = (state) => {
       arr[0] = arr[0].length < 7 ? arr[0] : arr[0].substring(0, 7);
 
       item.previousElementSibling.textContent = arr.join(`${dots}`);
-
-      console.log(arr);
     });
   });
 
@@ -26,7 +24,6 @@ const forms = (state) => {
         `Failed to fetch ${url}: ${req.statusText} ${req.status}`
       );
     }
-
     return await req.text();
   };
 
@@ -70,9 +67,8 @@ const forms = (state) => {
       const formData = new FormData(form);
 
       if (form.hasAttribute('data-form-calc')) {
-        for (const key in state) {
-          formData.append(key, state[key]);
-        }
+        const price = document.querySelector('.calc-price').textContent;
+        formData.append('total-price', price);
       }
 
       postData(path, formData)
@@ -95,10 +91,6 @@ const forms = (state) => {
           upload.forEach((input) => {
             input.previousElementSibling.textContent = 'Файл не выбран';
           });
-
-          for (const key in state) {
-            delete state[key];
-          }
 
           setTimeout(() => {
             status.remove();

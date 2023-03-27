@@ -3,8 +3,7 @@ const calc = (
   materialSelector,
   optionsSelector,
   promocodeSelector,
-  resultSelector,
-  state
+  resultSelector
 ) => {
   const size = document.querySelector(sizeSelector);
   const material = document.querySelector(materialSelector);
@@ -34,7 +33,6 @@ const calc = (
       result.textContent = total - total * 0.3 + 'руб.';
     } else {
       result.textContent = total + 'руб';
-      state.price = total;
       sendButton.removeAttribute('disabled');
       sendButton.style.cssText = `
           background-image: linear-gradient(66deg, #a12ab1 0%, #c818bc 100%);
@@ -45,71 +43,6 @@ const calc = (
           background-color: transparent;
       `;
     }
-
-    function changeState(select, props) {
-      if (select === size) {
-        switch (select.value) {
-          case '500':
-            state[props] = '40x50';
-            break;
-
-          case '650':
-            state[props] = '50x70';
-            break;
-
-          case '900':
-            state[props] = '70x70';
-            break;
-
-          case '1100':
-            state[props] = '70x100';
-            break;
-          default:
-            delete state[props];
-            break;
-        }
-      }
-      if (select === material) {
-        switch (select.value) {
-          case '1.2':
-            state[props] = 'Холст из волокна';
-            break;
-
-          case '1.1':
-            state[props] = 'Льняной холст';
-            break;
-
-          case '1.5':
-            state[props] = 'Холст из натурального хлопка';
-            break;
-          default:
-            delete state[props];
-            break;
-        }
-      }
-      if (select === options) {
-        switch (select.value) {
-          case '200':
-            state[props] = 'Покрытие арт-гелем';
-            break;
-
-          case '500':
-            state[props] = 'Экспресс-изготовление';
-            break;
-
-          case '100':
-            state[props] = 'Доставка готовых работ';
-            break;
-          default:
-            delete state[props];
-            break;
-        }
-      }
-    }
-
-    changeState(size, 'size');
-    changeState(material, 'material');
-    changeState(options, 'options');
   }
 
   size.addEventListener('change', calcPrice);
