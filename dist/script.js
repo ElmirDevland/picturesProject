@@ -2,6 +2,48 @@
 /******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
+/***/ "./src/js/modules/accordion.js":
+/*!*************************************!*\
+  !*** ./src/js/modules/accordion.js ***!
+  \*************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+const accordion = triggersSelector => {
+  const btns = document.querySelectorAll(triggersSelector);
+  btns.forEach(btn => {
+    btn.addEventListener('click', function () {
+      if (this.classList.contains('active-style')) hideAccordion();
+      // ЕСЛИ АКТИВНЫЙ, ЗАКРЫТЬ.
+      // ИНАЧЕ, СНАЧАЛА ЗАКРЫТЬ ПРЕДЫДУЩИЕ, ПОТОМ ПОКАЗАТЬ ТЕКУЩИЙ.
+      else {
+        hideAccordion();
+        showAccordion(this);
+      }
+    });
+  });
+  function hideAccordion() {
+    btns.forEach(elem => {
+      const next = elem.nextElementSibling;
+      elem.classList.remove('active-style');
+      next.classList.remove('active-content');
+      next.style.maxHeight = 0;
+    });
+  }
+  function showAccordion(elem) {
+    const next = elem.nextElementSibling;
+    elem.classList.add('active-style');
+    next.classList.add('active-content');
+    next.style.maxHeight = `${next.scrollHeight + 80}px`;
+  }
+};
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (accordion);
+
+/***/ }),
+
 /***/ "./src/js/modules/calc.js":
 /*!********************************!*\
   !*** ./src/js/modules/calc.js ***!
@@ -403,15 +445,19 @@ const pictureSize = imgSelector => {
     const img = block.querySelector('img');
     img.classList.add('animated', 'fadeIn');
     img.src = img.src.slice(0, -4) + '-1.png';
-    block.querySelectorAll('p:not(sizes-hit)').forEach(p => p.classList.remove('show', 'fadeIn'));
-    block.querySelectorAll('p:not(sizes-hit)').forEach(p => p.classList.add('hide'));
+    block.querySelectorAll('p:not(.sizes-hit)').forEach(p => {
+      p.classList.remove('show', 'fadeIn');
+      p.classList.add('hide');
+    });
   }
   function hideImg(block) {
     const img = block.querySelector('img');
     img.classList.remove('fadeIn');
     img.src = img.src.slice(0, -6) + '.png';
-    block.querySelectorAll('p:not(sizes-hit)').forEach(p => p.classList.remove('hide'));
-    block.querySelectorAll('p:not(sizes-hit)').forEach(p => p.classList.add('animated', 'fadeIn', 'show'));
+    block.querySelectorAll('p:not(.sizes-hit)').forEach(p => {
+      p.classList.remove('hide');
+      p.classList.add('animated', 'fadeIn', 'show');
+    });
   }
   blocks.forEach(block => {
     block.addEventListener('mouseover', () => showImg(block));
@@ -646,6 +692,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _modules_calc__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./modules/calc */ "./src/js/modules/calc.js");
 /* harmony import */ var _modules_filter__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./modules/filter */ "./src/js/modules/filter.js");
 /* harmony import */ var _modules_pictureSize__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./modules/pictureSize */ "./src/js/modules/pictureSize.js");
+/* harmony import */ var _modules_accordion__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./modules/accordion */ "./src/js/modules/accordion.js");
+
 
 
 
@@ -669,6 +717,7 @@ window.addEventListener('DOMContentLoaded', () => {
   (0,_modules_calc__WEBPACK_IMPORTED_MODULE_6__["default"])('#size', '#material', '#options', '.promocode', '.calc-price');
   (0,_modules_filter__WEBPACK_IMPORTED_MODULE_7__["default"])();
   (0,_modules_pictureSize__WEBPACK_IMPORTED_MODULE_8__["default"])('.sizes-block');
+  (0,_modules_accordion__WEBPACK_IMPORTED_MODULE_9__["default"])('.accordion-heading');
 });
 })();
 
