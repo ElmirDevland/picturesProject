@@ -12,6 +12,9 @@ const filter = () => {
       item.classList.add('hide');
     });
 
+    no.classList.remove('show', 'animated', 'fadeIn');
+    no.classList.add('hide');
+
     if (markType) {
       markType.forEach((item) => {
         item.classList.remove('hide');
@@ -21,9 +24,6 @@ const filter = () => {
       no.classList.remove('hide');
       no.classList.add('show', 'animated', 'fadeIn');
     }
-
-    no.classList.add('hide');
-    no.classList.remove('animated', 'fadeIn');
   }
 
   menu.addEventListener('click', (e) => {
