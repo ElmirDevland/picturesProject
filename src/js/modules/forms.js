@@ -1,3 +1,5 @@
+import postData from '../services/services';
+
 const forms = () => {
   const forms = document.querySelectorAll('form');
   const inputs = document.querySelectorAll('input');
@@ -12,20 +14,6 @@ const forms = () => {
       item.previousElementSibling.textContent = arr.join(`${dots}`);
     });
   });
-
-  const postData = async (url, body) => {
-    const req = await fetch(url, {
-      method: 'POST',
-      body: body,
-    });
-
-    if (!req.ok) {
-      throw new Error(
-        `Failed to fetch ${url}: ${req.statusText} ${req.status}`
-      );
-    }
-    return await req.text();
-  };
 
   const statusMessage = {
     loading: 'Идёт отправка',
@@ -73,7 +61,6 @@ const forms = () => {
 
       postData(path, formData)
         .then((data) => {
-          console.log(data);
           showStatusMessage(statusMessage.success, statusMessage.ok);
           status.style.color = 'green';
         })

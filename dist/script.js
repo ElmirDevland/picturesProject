@@ -138,6 +138,92 @@ const calc = (sizeSelector, materialSelector, optionsSelector, promocodeSelector
 
 /***/ }),
 
+/***/ "./src/js/modules/drop.js":
+/*!********************************!*\
+  !*** ./src/js/modules/drop.js ***!
+  \********************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _services_services__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../services/services */ "./src/js/services/services.js");
+
+const drop = () => {
+  const fileInput = document.querySelectorAll('[name="upload"]');
+  ['dragenter', 'dragleave', 'dragover', 'drop'].forEach(event => {
+    fileInput.forEach(input => {
+      input.addEventListener(event, preventDefaults, false);
+    });
+  });
+  ['dragenter', 'dragover'].forEach(event => {
+    fileInput.forEach(input => {
+      input.addEventListener(event, () => highlight(input), false);
+    });
+  });
+  ['dragleave', 'drop'].forEach(event => {
+    fileInput.forEach(input => {
+      input.addEventListener(event, () => unhighlight(input), false);
+    });
+  });
+  function send(arg) {
+    const status = document.createElement('p');
+    const data = new FormData();
+    data.append('picture', arg.files[0]);
+    (0,_services_services__WEBPACK_IMPORTED_MODULE_0__["default"])('assets/designer.php', data).then(data => {
+      status.style.color = 'green';
+      status.textContent = 'Отправлено';
+      arg.parentElement.append(status);
+    }).catch(e => {
+      status.style.color = 'red';
+      status.textContent = 'Ошибка';
+      arg.parentElement.append(status);
+      console.log(e.message);
+    }).finally(() => {
+      setTimeout(() => {
+        status.remove();
+        arg.previousElementSibling.textContent = 'Файл не выбран';
+      }, 2500);
+    });
+  }
+  fileInput.forEach(item => {
+    item.addEventListener('drop', e => {
+      item.files = e.dataTransfer.files;
+      const arr = item.files[0].name.split('.');
+      const dots = arr[0].length < 7 ? '.' : '...';
+      arr[0] = arr[0].length < 7 ? arr[0] : arr[0].substring(0, 7);
+      item.previousElementSibling.textContent = arr.join(`${dots}`);
+      if (item.hasAttribute('data-none')) {
+        send(item);
+      }
+    });
+    item.addEventListener('input', () => {
+      send(item);
+    });
+  });
+  function preventDefaults(e) {
+    e.preventDefault();
+    e.stopPropagation();
+  }
+  function highlight(item) {
+    item.closest('.file_upload').style.cssText = `
+    border: 2px solid #c51abb;
+    border-radius: 50px;
+    padding: 5px;
+    `;
+  }
+  function unhighlight(item) {
+    item.closest('.file_upload').style.cssText = `
+   border: 'none';
+   padding: 0;
+   `;
+  }
+};
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (drop);
+
+/***/ }),
+
 /***/ "./src/js/modules/filter.js":
 /*!**********************************!*\
   !*** ./src/js/modules/filter.js ***!
@@ -209,6 +295,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
+/* harmony import */ var _services_services__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../services/services */ "./src/js/services/services.js");
+
 const forms = () => {
   const forms = document.querySelectorAll('form');
   const inputs = document.querySelectorAll('input');
@@ -221,16 +309,6 @@ const forms = () => {
       item.previousElementSibling.textContent = arr.join(`${dots}`);
     });
   });
-  const postData = async (url, body) => {
-    const req = await fetch(url, {
-      method: 'POST',
-      body: body
-    });
-    if (!req.ok) {
-      throw new Error(`Failed to fetch ${url}: ${req.statusText} ${req.status}`);
-    }
-    return await req.text();
-  };
   const statusMessage = {
     loading: 'Идёт отправка',
     success: 'Отправлено',
@@ -263,8 +341,7 @@ const forms = () => {
         const price = document.querySelector('.calc-price').textContent;
         formData.append('total-price', price);
       }
-      postData(path, formData).then(data => {
-        console.log(data);
+      (0,_services_services__WEBPACK_IMPORTED_MODULE_0__["default"])(path, formData).then(data => {
         showStatusMessage(statusMessage.success, statusMessage.ok);
         status.style.color = 'green';
       }).catch(error => {
@@ -710,6 +787,30 @@ const sliders = function (slidesSelector) {
 };
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (sliders);
 
+/***/ }),
+
+/***/ "./src/js/services/services.js":
+/*!*************************************!*\
+  !*** ./src/js/services/services.js ***!
+  \*************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+const postData = async (url, body) => {
+  const req = await fetch(url, {
+    method: 'POST',
+    body: body
+  });
+  if (!req.ok) {
+    throw new Error(`Failed to fetch ${url}: ${req.statusText} ${req.status}`);
+  }
+  return await req.text();
+};
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (postData);
+
 /***/ })
 
 /******/ 	});
@@ -787,6 +888,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _modules_accordion__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./modules/accordion */ "./src/js/modules/accordion.js");
 /* harmony import */ var _modules_burger__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./modules/burger */ "./src/js/modules/burger.js");
 /* harmony import */ var _modules_scrolling__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./modules/scrolling */ "./src/js/modules/scrolling.js");
+/* harmony import */ var _modules_drop__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ./modules/drop */ "./src/js/modules/drop.js");
+
 
 
 
@@ -816,6 +919,7 @@ window.addEventListener('DOMContentLoaded', () => {
   (0,_modules_accordion__WEBPACK_IMPORTED_MODULE_9__["default"])('.accordion-heading');
   (0,_modules_burger__WEBPACK_IMPORTED_MODULE_10__["default"])('.burger-menu', '.burger');
   (0,_modules_scrolling__WEBPACK_IMPORTED_MODULE_11__["default"])('.pageup');
+  (0,_modules_drop__WEBPACK_IMPORTED_MODULE_12__["default"])();
 });
 })();
 
